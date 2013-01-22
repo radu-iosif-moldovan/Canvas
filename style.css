@@ -1,10 +1,14 @@
-#header{
-	color:red;
+#toolbar{
+	background-color:#990000;
 	text-align:center; 
+	width:1404px; 
+}
+button{
+	background-color:#FFFFDD;
 }
 #canvas{
 	background-color:#FFFFDD; 
-	border:2px solid #000000;;
+	border:2px solid #000000;
 }
 #coord{
 	color:blue;
