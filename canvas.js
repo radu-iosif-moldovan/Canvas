@@ -8,6 +8,7 @@ var Paint= function(){
     this.shape='line';
     this.x=0;
     this.y=0;
+    this.color='#FFFFDD';
 }
 Paint.prototype.setShape=function(shape){
     this.shape=shape;
@@ -18,11 +19,15 @@ Paint.prototype.setX=function(x){
 Paint.prototype.setY=function(y){
     this.y=y;
 }
+Paint.prototype.setColor=function(color){
+    this.color=color;
+}
 paint=new Paint();
 
 t.childNodes[1].onclick=function(){
     //ctx.clearRect(0,0,1400,600); //very lame cause it repaints shit after :)
     c.width=c.width;
+    c.style.backgroundColor = paint.color;
 }
 t.childNodes[3].onclick=function(){
     paint.setShape('line');
@@ -33,13 +38,10 @@ t.childNodes[5].onclick=function(){
 t.childNodes[7].onclick=function(){
     paint.setShape('circle');
 }
-t.childNodes[9].onclick=function(){
-    var msg="Hello";
-    var defaultText="insert color (ex: FF00AA)";
-    var s=prompt(msg,defaultText);
-    ctx.strokeStyle= '#'+s;
+t.childNodes[9].onmouseout=function(){
+paint.setColor(this.style.backgroundColor);
+ctx.strokeStyle=paint.color;
 }
-
 
 c.onmousemove = function(evt){    
     var x= evt.clientX - rect.left;
@@ -49,6 +51,8 @@ c.onmousemove = function(evt){
 c.onmouseout = function(evt){    
     coord.innerText="";
 }
+
+
 c.addEventListener('mousedown', function (evt){    
     var x= evt.clientX- rect.left;;
     var y= evt.clientY- rect.top;
@@ -59,6 +63,7 @@ c.addEventListener('mousedown', function (evt){
     ctx.beginPath();
     ctx.moveTo(x,y);
 });
+
 c.addEventListener('mouseup',function (evt){
     var x= evt.clientX- rect.left;;
     var y= evt.clientY- rect.top;
