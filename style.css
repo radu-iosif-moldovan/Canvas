@@ -1,7 +1,10 @@
+body{
+	background-color:#990000;
+}
 #toolbar{
 	background-color:#990000;
 	text-align:center; 
-	width:1404px; 
+	width:1904px; 
 }
 button{
 	background-color:#FFFFDD;
@@ -11,5 +14,5 @@ button{
 	border:2px solid #000000;
 }
 #coord{
-	color:blue;
+	color:#FFFFDD;
 }
