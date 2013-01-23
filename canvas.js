@@ -74,12 +74,18 @@ ctx.lineWidth=paint.width;
 t.childNodes[21].innerText=""+paint.width;
 }
 }
+t.childNodes[23].onclick=function(){//set shape to free
+    paint.setShape('free');
+}
 
 
 c.onmousemove = function(evt){    
     var x= evt.clientX - rect.left;
     var y= evt.clientY - rect.top;      
-    coord.innerText="x:"+x+"   y:"+y;    
+    coord.innerText="x:"+x+"   y:"+y;
+    if(paint.shape=='free'){
+    move(evt);
+    }  
 }
 c.onmouseout = function(evt){    
     coord.innerText="";
@@ -87,18 +93,24 @@ c.onmouseout = function(evt){
 
 
 c.addEventListener('mousedown', function (evt){    
-    var x= evt.clientX- rect.left;;
-    var y= evt.clientY- rect.top;
+    var x= evt.clientX- rect.left;
+    var y= evt.clientY- rect.top;    
     //ctx.font="12px Arial";
-    //ctx.fillText("x:"+x+"   y:"+y,x,y);
+    //ctx.fillText("x:"+x+"   y:"+y,x,y);    
+    if(paint.shape!=='free'){
     paint.setX(x);
     paint.setY(y);
     ctx.beginPath();
     ctx.moveTo(x,y);
+    }
+    else{
+        start(evt);
+    }
+
 });
 
 c.addEventListener('mouseup',function (evt){
-    var x= evt.clientX- rect.left;;
+    var x= evt.clientX- rect.left;
     var y= evt.clientY- rect.top;
     //ctx.font="12px Arial";
     //ctx.fillText("x:"+x+"   y:"+y,x,y);    
@@ -130,6 +142,27 @@ c.addEventListener('mouseup',function (evt){
     ctx.stroke();
     }
     ctx.closePath();
-    break;
+    break;    
     }
+    stop(evt);
 });
+var clicked = 0;
+var start = function(e) {      
+    clicked = 1;
+    ctx.beginPath(); 
+    var x= e.clientX- rect.left;
+    var y= e.clientY- rect.top;
+    ctx.moveTo(x,y);
+    };
+var move = function(e) {
+    if(clicked){
+    var x= e.clientX- rect.left;
+    var y= e.clientY- rect.top;
+    ctx.lineTo(x,y);
+    ctx.stroke();
+        }
+    };
+var stop = function(e) {
+    clicked = 0;
+    };
+    
