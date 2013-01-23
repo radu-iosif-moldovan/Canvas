@@ -99,10 +99,7 @@ paint.setGradient();
 }
 t.childNodes[31].onclick=function(){//set gradient color
 paint.setGradientColor(this.style.backgroundColor);
-var grad=ctx.createLinearGradient(paint.x,paint.y,0,370);
-grad.addColorStop(0,paint.color);
-grad.addColorStop(1,paint.gradientColor);
-setFillStyle(grad);
+
 
 
 }
@@ -164,6 +161,12 @@ c.addEventListener('mouseup',function (evt){
     case 'rect':
     ctx.beginPath();    
     if (paint.fill){
+        if(paint.gradient){
+            var grad=ctx.createLinearGradient(x,y,paint.x,paint.y);
+            grad.addColorStop(0,paint.color);
+            grad.addColorStop(1,paint.gradientColor);
+            setFillStyle(grad);
+        }
     ctx.fillRect(paint.x,paint.y,x-paint.x,y-paint.y);
     }
     else{
