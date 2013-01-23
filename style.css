@@ -12,9 +12,11 @@ button{
 #canvas{
 	background-color:#FFFFDD; 
 	border:2px solid #000000;
+	
 }
 #coord{
 	color:#FFFFDD;
+
 }
 label{
 	color:#FFFFDD;

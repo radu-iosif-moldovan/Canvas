@@ -4,12 +4,14 @@ var t= document.getElementById('toolbar')
 var coord = document.getElementById('coord');
 var rect = c.getBoundingClientRect()
 var Paint= function(){
-    this.shape='line';
+    this.shape='free';
     this.x=0;
     this.y=0;
     this.color='#000000';
     this.fill=false;
     this.width=1;
+    this.gradient=false;
+    this.gradientColor='#000000'
 }
 
 Paint.prototype.setShape=function(shape){
@@ -35,6 +37,21 @@ Paint.prototype.setFill=function(){
 Paint.prototype.lineWidth=function(w){
     this.width=this.width+w;
 }
+Paint.prototype.setGradient=function(){
+    if(this.gradient){
+        this.gradient=false;
+    }
+    else{
+        this.gradient=true;
+    }
+}
+Paint.prototype.setGradientColor=function(color){
+    this.gradientColor=color;
+}
+setFillStyle=function(style){
+    ctx.fillStyle=style;
+}
+
 paint=new Paint();
 
 t.childNodes[1].onclick=function(){
@@ -57,7 +74,7 @@ t.childNodes[7].onclick=function(){//set shape to circle
 t.childNodes[11].onmouseout=function(){//color chooser, broken needs fixing
 paint.setColor(this.style.backgroundColor);
 ctx.strokeStyle=paint.color;
-ctx.fillStyle=paint.color;
+setFillStyle(paint.color);
 }
 t.childNodes[15].onclick=function(){//set fill to be true or false
 paint.setFill();
@@ -76,6 +93,18 @@ t.childNodes[21].innerText=""+paint.width;
 }
 t.childNodes[23].onclick=function(){//set shape to free
     paint.setShape('free');
+}
+t.childNodes[27].onclick=function(){//set gradient to be true or false
+paint.setGradient();
+}
+t.childNodes[31].onclick=function(){//set gradient color
+paint.setGradientColor(this.style.backgroundColor);
+var grad=ctx.createLinearGradient(paint.x,paint.y,0,370);
+grad.addColorStop(0,paint.color);
+grad.addColorStop(1,paint.gradientColor);
+setFillStyle(grad);
+
+
 }
 
 
