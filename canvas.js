@@ -12,6 +12,7 @@ var Paint= function(){
     this.width=1;
     this.gradient=false;
     this.gradientColor='#000000'
+    this.text='';
 }
 
 Paint.prototype.setShape=function(shape){
@@ -25,6 +26,9 @@ Paint.prototype.setY=function(y){
 }
 Paint.prototype.setColor=function(color){
     this.color=color;
+}
+Paint.prototype.setText=function(text){
+    this.text=text;
 }
 Paint.prototype.setFill=function(){
     if(this.fill){
@@ -103,46 +107,51 @@ paint.setGradientColor(this.style.backgroundColor);
 t.childNodes[33].onclick=function(e){//set gradient color
 c.width=c.width;
 c.style.backgroundColor ='#FFFFDD';
-var tile_size = 50;
+var tile_size = paint.width;
 var startX = canvas.width / 2;
 var startY = canvas.height / 2;
 ctx.fillRect(startX, startY, tile_size, tile_size);  
 var cx = startX,
     cy = startY; 
-
 document.addEventListener("keydown", function(e){ 
     switch(e.keyCode)
     {
         //left
         case 37:
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillRect(cx - tile_size, cy, tile_size, tile_size);
                 cx -= tile_size;
         break;
             
         //up
         case 38:
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillRect(cx, cy - tile_size, tile_size, tile_size);
                 cy -= tile_size;
         break;
             
         //right
         case 39:
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillRect(cx + tile_size, cy, tile_size, tile_size);
                 cx += tile_size;
         break;
         
         //down
         case 40:
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillRect(cx, cy + tile_size, tile_size, tile_size);
                 cy += tile_size;
         break;
     
 }
 })}
+t.childNodes[35].onclick=function(){//set shape to text
+    paint.setShape('text');
+    var msg="Hello";
+    var defaultText="Write some text please :D" ;
+    paint.setText(prompt(msg,defaultText));                            
+}
 
 
 c.onmousemove = function(evt){    
@@ -192,7 +201,7 @@ c.addEventListener('mouseup',function (evt){
     ctx.arc(paint.x,paint.y,r,0,2*Math.PI);
     if (paint.fill){
         if(paint.gradient){
-            var grad=ctx.createLinearGradient(x,y,paint.x,paint.y);
+            var grad=ctx.createRadialGradient(x,y,r,paint.x,paint.y,r*2);
             grad.addColorStop(0,paint.color);
             grad.addColorStop(1,paint.gradientColor);
             setFillStyle(grad);
@@ -221,6 +230,12 @@ c.addEventListener('mouseup',function (evt){
     }
     ctx.closePath();
     break;    
+    case 'text':
+    {
+    ctx.font=document.getElementById('textSize').value+"px Arial";
+    ctx.fillText(paint.text,x,y); 
+    break;
+}
     }
     stop(evt);
 });
