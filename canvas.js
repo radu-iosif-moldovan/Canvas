@@ -9,6 +9,7 @@ var Paint= function(){
     this.y=0;
     this.color='#000000';
     this.fill=false;
+    this.width=1;
 }
 
 Paint.prototype.setShape=function(shape){
@@ -31,31 +32,48 @@ Paint.prototype.setFill=function(){
         this.fill=true;
     }
 }
+Paint.prototype.lineWidth=function(w){
+    this.width=this.width+w;
+}
 paint=new Paint();
 
 t.childNodes[1].onclick=function(){
     //ctx.clearRect(0,0,1400,600); //very lame cause it repaints shit after :)
     c.width=c.width;
     c.style.backgroundColor ='#FFFFDD';
+    ctx.strokeStyle=paint.color;
+    ctx.fillStyle=paint.color;
+    ctx.lineWidth=paint.width;
 }
-t.childNodes[3].onclick=function(){
+t.childNodes[3].onclick=function(){//set shape to line
     paint.setShape('line');
 }
-t.childNodes[5].onclick=function(){
+t.childNodes[5].onclick=function(){//set shape to rect
     paint.setShape('rect');
 }
-t.childNodes[7].onclick=function(){
+t.childNodes[7].onclick=function(){//set shape to circle
     paint.setShape('circle');
 }
-t.childNodes[11].onmouseout=function(){
+t.childNodes[11].onmouseout=function(){//color chooser, broken needs fixing
 paint.setColor(this.style.backgroundColor);
 ctx.strokeStyle=paint.color;
 ctx.fillStyle=paint.color;
 }
-t.childNodes[15].onclick=function(){
+t.childNodes[15].onclick=function(){//set fill to be true or false
 paint.setFill();
 }
-
+t.childNodes[17].onclick=function(){//increase line width
+paint.lineWidth(+1);
+ctx.lineWidth=paint.width;
+t.childNodes[21].innerText=""+paint.width;
+}
+t.childNodes[19].onclick=function(){//decrease line width
+if(paint.width-1){
+paint.lineWidth(-1);
+ctx.lineWidth=paint.width;
+t.childNodes[21].innerText=""+paint.width;
+}
+}
 
 
 c.onmousemove = function(evt){    
