@@ -11,8 +11,10 @@ var Paint= function(){
     this.fill=false;
     this.width=1;
     this.gradient=false;
+    this.border=false;
     this.gradientColor='#000000'
     this.text='';
+    this.action=[];
 }
 
 Paint.prototype.setShape=function(shape){
@@ -52,6 +54,35 @@ Paint.prototype.setGradient=function(){
 Paint.prototype.setGradientColor=function(color){
     this.gradientColor=color;
 }
+Paint.prototype.setBorder=function(){
+    if(this.border){
+        this.border=false;
+    }
+    else{
+        this.border=true;
+    }
+}
+Paint.prototype.addAction=function (action){
+    this.action.push(action);
+}
+Paint.prototype.undo=function (){
+    var l=this.action.length;
+    if(l>1){
+        this.action.pop();
+        ctx.putImageData(this.action[l-2].state,0,0);
+    }
+    else{
+        this.action.pop();
+        c.width=c.width;
+        c.style.backgroundColor ='#FFFFDD';
+        ctx.strokeStyle=paint.color;
+        ctx.fillStyle=paint.color;
+        ctx.lineWidth=paint.width;
+    }
+
+}
+
+
 setFillStyle=function(style){
     ctx.fillStyle=style;
 }
@@ -60,6 +91,7 @@ paint=new Paint();
 
 t.childNodes[1].onclick=function(){
     //ctx.clearRect(0,0,1400,600); //very lame cause it repaints shit after :)
+    paint.action=[];
     c.width=c.width;
     c.style.backgroundColor ='#FFFFDD';
     ctx.strokeStyle=paint.color;
@@ -153,6 +185,13 @@ t.childNodes[35].onclick=function(){//set shape to text
     paint.setText(prompt(msg,defaultText));                            
 }
 
+t.childNodes[41].onclick=function(){//set border 
+    paint.setBorder();
+}
+t.childNodes[43].onclick=function(){//undo
+    paint.undo();
+}
+
 
 c.onmousemove = function(evt){    
     var x= evt.clientX - rect.left;
@@ -194,6 +233,7 @@ c.addEventListener('mouseup',function (evt){
     ctx.lineTo(x,y);
     ctx.stroke();
     ctx.closePath();
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
     break;
     case 'circle':
     ctx.beginPath();
@@ -201,16 +241,21 @@ c.addEventListener('mouseup',function (evt){
     ctx.arc(paint.x,paint.y,r,0,2*Math.PI);
     if (paint.fill){
         if(paint.gradient){
-            var grad=ctx.createRadialGradient(x,y,r,paint.x,paint.y,r*2);
+            var grad=ctx.createRadialGradient(x,y,r/2,paint.x,paint.y,r*2);
             grad.addColorStop(0,paint.color);
             grad.addColorStop(1,paint.gradientColor);
             setFillStyle(grad);
         }
     ctx.fill();
+    if (paint.border){
+        ctx.strokeStyle=paint.gradientColor;
+        ctx.stroke();
+    }   
     }
     else{    
     ctx.stroke();
     }
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)}) //used for UNDO functionality, high memory usage!!!!!
     ctx.closePath();
     break;
     case 'rect':
@@ -222,18 +267,25 @@ c.addEventListener('mouseup',function (evt){
             grad.addColorStop(1,paint.gradientColor);
             setFillStyle(grad);
         }
-    ctx.fillRect(paint.x,paint.y,x-paint.x,y-paint.y);
+    ctx.rect(paint.x,paint.y,x-paint.x,y-paint.y);
+    ctx.fill()
+    if (paint.border){
+        ctx.strokeStyle=paint.gradientColor;
+        ctx.stroke();
+    }   
     }
     else{
     ctx.rect(paint.x,paint.y,x-paint.x,y-paint.y);
     ctx.stroke();
     }
-    ctx.closePath();
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)}) //used for UNDO functionality, high memory usage!!!!!
+    ctx.closePath();   
     break;    
     case 'text':
     {
     ctx.font=document.getElementById('textSize').value+"px Arial";
-    ctx.fillText(paint.text,x,y); 
+    ctx.fillText(paint.text,x,y);
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
     break;
 }
     }
@@ -256,6 +308,8 @@ var move = function(e) {
         }
     };
 var stop = function(e) {
-    clicked = 0;
+    if (paint.shape=='free'){
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)}) //used for UNDO functionality, high memory usage!!!!!
+    }clicked = 0;
     };
     
