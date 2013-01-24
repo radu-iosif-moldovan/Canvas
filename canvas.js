@@ -198,6 +198,14 @@ t.childNodes[55].onclick=function(){//undo
    paint.setShape('quadratic');
 
 }
+t.childNodes[57].onclick=function(){//save
+var img =c.toDataURL("image/png");
+localStorage.setItem(0,JSON.stringify(img));   
+}
+t.childNodes[59].onclick=function(){//save
+var img =JSON.parse(localStorage.getItem(0))
+document.write('<img src='+img+'>')
+}
 
 
 
