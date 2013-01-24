@@ -191,6 +191,14 @@ t.childNodes[41].onclick=function(){//set border
 t.childNodes[43].onclick=function(){//undo
     paint.undo();
 }
+t.childNodes[45].onclick=function(){//undo
+   paint.setShape('bezier');
+}
+t.childNodes[55].onclick=function(){//undo
+   paint.setShape('quadratic');
+
+}
+
 
 
 c.onmousemove = function(evt){    
@@ -229,7 +237,7 @@ c.addEventListener('mouseup',function (evt){
     //ctx.font="12px Arial";
     //ctx.fillText("x:"+x+"   y:"+y,x,y);    
     switch (paint.shape){
-    case 'line': 
+    case 'line':
     ctx.lineTo(x,y);
     ctx.stroke();
     ctx.closePath();
@@ -286,8 +294,28 @@ c.addEventListener('mouseup',function (evt){
     ctx.font=document.getElementById('textSize').value+"px Arial";
     ctx.fillText(paint.text,x,y);
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
-    break;
-}
+    break;    
+    }
+    case 'bezier':
+    {
+    ctx.bezierCurveTo(paint.x,paint.y+100,x,y-100,x,y);
+    ctx.stroke();
+    ctx.closePath();
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
+    break;    
+    }
+    case 'quadratic':
+    {
+    var cpx=0;
+    var cpy=0;
+    cpx=document.getElementById('cp1x').value;
+    cpy=document.getElementById('cp1y').value;
+    ctx.quadraticCurveTo(cpx,cpy,x,y);
+    ctx.stroke();
+    ctx.closePath();
+    //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
+    break;    
+    }
     }
     stop(evt);
 });
