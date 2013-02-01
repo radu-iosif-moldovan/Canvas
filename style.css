@@ -12,7 +12,10 @@ button{
 #canvas{
 	background-color:#FFFFDD; 
 	border:2px solid #000000;
-	
+	cursor:crosshair;
+}
+#canvas:active { 
+    cursor:crosshair;
 }
 #coord{
 	color:#FFFFDD;

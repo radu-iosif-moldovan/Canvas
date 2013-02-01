@@ -121,9 +121,9 @@ ctx.lineWidth=paint.width;
 t.childNodes[21].innerText=""+paint.width;
 }
 t.childNodes[19].onclick=function(){//decrease line width
-if(paint.width-1){
-paint.lineWidth(-1);
-ctx.lineWidth=paint.width;
+    if(paint.width-1){
+    paint.lineWidth(-1);
+    ctx.lineWidth=paint.width;
 t.childNodes[21].innerText=""+paint.width;
 }
 }
@@ -131,10 +131,10 @@ t.childNodes[23].onclick=function(){//set shape to free
     paint.setShape('free');
 }
 t.childNodes[27].onclick=function(){//set gradient to be true or false
-paint.setGradient();
+    paint.setGradient();
 }
 t.childNodes[31].onclick=function(){//set gradient color
-paint.setGradientColor(this.style.backgroundColor);
+    paint.setGradientColor(this.style.backgroundColor);
 }
 t.childNodes[33].onclick=function(e){//set gradient color
 c.width=c.width;
@@ -185,27 +185,83 @@ t.childNodes[35].onclick=function(){//set shape to text
     paint.setText(prompt(msg,defaultText));                            
 }
 
-t.childNodes[41].onclick=function(){//set border 
+t.childNodes[41].onclick=function() {//set border 
     paint.setBorder();
-}
-t.childNodes[43].onclick=function(){//undo
+};
+t.childNodes[43].onclick=function() {//undo
     paint.undo();
-}
-t.childNodes[45].onclick=function(){//undo
+};
+t.childNodes[45].onclick=function() {//undo
    paint.setShape('bezier');
-}
-t.childNodes[55].onclick=function(){//undo
+};
+t.childNodes[55].onclick=function() {//undo
    paint.setShape('quadratic');
 
 }
 t.childNodes[57].onclick=function(){//save
 var img =c.toDataURL("image/png");
 localStorage.setItem(0,JSON.stringify(img));   
-}
+};
 t.childNodes[59].onclick=function(){//save
 var img =JSON.parse(localStorage.getItem(0))
 document.write('<img src='+img+'>')
-}
+};
+
+t.childNodes[61].onclick=function() {//save
+    var i,
+        s='#';
+    for (i = 0; i < 6; i++) {
+        s+=Math.floor(Math.random()*16).toString(16);
+
+    }
+    s=s.toUpperCase();
+    paint.setColor(s);
+    ctx.strokeStyle=paint.color;
+    setFillStyle(paint.color);
+    
+};
+t.childNodes[63].onclick=function() {//save
+    var x1,y1,x2,y2,i,s,k=100;
+
+    while(k--){
+        s='#';
+    for (i = 0; i < 6; i++) {
+        s+=Math.floor(Math.random()*16).toString(16);
+
+    }
+    paint.color=s.toUpperCase();
+
+    ctx.strokeStyle=paint.color;
+    setFillStyle(paint.color);
+    x1=Math.floor(Math.random()*1900);
+    y1=Math.floor(Math.random()*800);
+    x2=Math.floor(Math.random()*1900)/4;
+    y2=Math.floor(Math.random()*800)/4;
+    ctx.beginPath();
+    if(x1 % 2){   
+    ctx.rect(x1,y1,x2,y2);
+
+    
+    } else {
+        var r=Math.sqrt( ((x1-x2)*(x1-x2))+((y1-y2)*(y1-y2)) );
+        r=r/10;
+        ctx.arc(x1,y1,r,0,2*Math.PI);
+
+    }
+    if(!(x1%5)){
+    ctx.fill();
+    }
+    else
+    {
+    ctx.stroke();
+    }
+    ctx.closePath();
+    }
+
+
+
+    
+};
 
 
 
@@ -222,7 +278,8 @@ c.onmouseout = function(evt){
 }
 
 
-c.addEventListener('mousedown', function (evt){    
+c.addEventListener('mousedown', function (evt){ 
+    document.onselectstart = function(){ return false; }   
     var x= evt.clientX- rect.left;
     var y= evt.clientY- rect.top;    
     //ctx.font="12px Arial";
@@ -328,7 +385,8 @@ c.addEventListener('mouseup',function (evt){
     stop(evt);
 });
 var clicked = 0;
-var start = function(e) {      
+var start = function(e) {
+
     clicked = 1;
     ctx.beginPath(); 
     var x= e.clientX- rect.left;
