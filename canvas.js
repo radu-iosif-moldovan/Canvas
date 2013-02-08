@@ -1,8 +1,8 @@
 var c = document.getElementById('canvas');
 var ctx = c.getContext('2d');
-var t= document.getElementById('toolbar')
+var t= document.getElementById('toolbar');
 var coord = document.getElementById('coord');
-var rect = c.getBoundingClientRect()
+var rect = c.getBoundingClientRect();
 var Paint= function(){
     this.shape='free';
     this.x=0;
@@ -12,26 +12,30 @@ var Paint= function(){
     this.width=1;
     this.gradient=false;
     this.border=false;
-    this.gradientColor='#000000'
+    this.gradientColor='#000000';
     this.text='';
     this.action=[];
-}
+    this.equation='';
+};
 
 Paint.prototype.setShape=function(shape){
     this.shape=shape;
-}
+};
+Paint.prototype.setEquation=function(shape){
+    this.equation=shape;
+};
 Paint.prototype.setX=function(x){
     this.x=x;
-}
+};
 Paint.prototype.setY=function(y){
     this.y=y;
-}
+};
 Paint.prototype.setColor=function(color){
     this.color=color;
-}
+};
 Paint.prototype.setText=function(text){
     this.text=text;
-}
+};
 Paint.prototype.setFill=function(){
     if(this.fill){
         this.fill=false;
@@ -39,10 +43,10 @@ Paint.prototype.setFill=function(){
     else{
         this.fill=true;
     }
-}
+};
 Paint.prototype.lineWidth=function(w){
     this.width=this.width+w;
-}
+};
 Paint.prototype.setGradient=function(){
     if(this.gradient){
         this.gradient=false;
@@ -50,10 +54,10 @@ Paint.prototype.setGradient=function(){
     else{
         this.gradient=true;
     }
-}
+};
 Paint.prototype.setGradientColor=function(color){
     this.gradientColor=color;
-}
+};
 Paint.prototype.setBorder=function(){
     if(this.border){
         this.border=false;
@@ -61,10 +65,10 @@ Paint.prototype.setBorder=function(){
     else{
         this.border=true;
     }
-}
+};
 Paint.prototype.addAction=function (action){
     this.action.push(action);
-}
+};
 Paint.prototype.undo=function (){
     var l=this.action.length;
     if(l>1){
@@ -80,12 +84,12 @@ Paint.prototype.undo=function (){
         ctx.lineWidth=paint.width;
     }
 
-}
+};
 
 
 setFillStyle=function(style){
     ctx.fillStyle=style;
-}
+};
 
 paint=new Paint();
 
@@ -97,45 +101,45 @@ t.childNodes[1].onclick=function(){
     ctx.strokeStyle=paint.color;
     ctx.fillStyle=paint.color;
     ctx.lineWidth=paint.width;
-}
+};
 t.childNodes[3].onclick=function(){//set shape to line
     paint.setShape('line');
-}
+};
 t.childNodes[5].onclick=function(){//set shape to rect
     paint.setShape('rect');
-}
+};
 t.childNodes[7].onclick=function(){//set shape to circle
     paint.setShape('circle');
-}
+};
 t.childNodes[11].onmouseout=function(){//color chooser, broken needs fixing
 paint.setColor(this.style.backgroundColor);
 ctx.strokeStyle=paint.color;
 setFillStyle(paint.color);
-}
+};
 t.childNodes[15].onclick=function(){//set fill to be true or false
 paint.setFill();
-}
+};
 t.childNodes[17].onclick=function(){//increase line width
 paint.lineWidth(+1);
 ctx.lineWidth=paint.width;
 t.childNodes[21].innerText=""+paint.width;
-}
+};
 t.childNodes[19].onclick=function(){//decrease line width
     if(paint.width-1){
     paint.lineWidth(-1);
     ctx.lineWidth=paint.width;
 t.childNodes[21].innerText=""+paint.width;
 }
-}
+};
 t.childNodes[23].onclick=function(){//set shape to free
     paint.setShape('free');
-}
+};
 t.childNodes[27].onclick=function(){//set gradient to be true or false
     paint.setGradient();
-}
+};
 t.childNodes[31].onclick=function(){//set gradient color
     paint.setGradientColor(this.style.backgroundColor);
-}
+};
 t.childNodes[33].onclick=function(e){//set gradient color
 c.width=c.width;
 c.style.backgroundColor ='#FFFFDD';
@@ -220,6 +224,18 @@ t.childNodes[61].onclick=function() {//save
     setFillStyle(paint.color);
     
 };
+setRandomColor = function(){
+     var i,
+        s='#';
+    for (i = 0; i < 6; i++) {
+        s+=Math.floor(Math.random()*16).toString(16);
+
+    }
+    s=s.toUpperCase();
+    paint.setColor(s);
+    ctx.strokeStyle=paint.color;
+    setFillStyle(paint.color);
+}
 t.childNodes[63].onclick=function() {//save
     var x1,y1,x2,y2,i,s,k=100;
 
@@ -266,8 +282,8 @@ t.childNodes[63].onclick=function() {//save
 
 
 c.onmousemove = function(evt){    
-    var x= evt.clientX - rect.left;
-    var y= evt.clientY - rect.top;      
+    var x = evt.clientX - rect.left;
+    var y = evt.clientY - rect.top;      
     coord.innerText="x:"+x+"   y:"+y;
     if(paint.shape=='free'){
     move(evt);
@@ -367,7 +383,7 @@ c.addEventListener('mouseup',function (evt){
     ctx.stroke();
     ctx.closePath();
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
-    break;    
+    break;
     }
     case 'quadratic':
     {
@@ -379,7 +395,7 @@ c.addEventListener('mouseup',function (evt){
     ctx.stroke();
     ctx.closePath();
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
-    break;    
+    break;
     }
     }
     stop(evt);
@@ -388,7 +404,7 @@ var clicked = 0;
 var start = function(e) {
 
     clicked = 1;
-    ctx.beginPath(); 
+    ctx.beginPath();
     var x= e.clientX- rect.left;
     var y= e.clientY- rect.top;
     ctx.moveTo(x,y);
@@ -402,8 +418,122 @@ var move = function(e) {
         }
     };
 var stop = function(e) {
-    if (paint.shape=='free'){
+    if (paint.shape === 'free'){
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)}) //used for UNDO functionality, high memory usage!!!!!
     }clicked = 0;
     };
     
+
+var plot = document.getElementById('plot');
+plot.onclick = function() {
+    var center=axis();
+    var step=10;
+    var msg="Hello";
+    var defaultText="Function:" ;
+
+
+    paint.setEquation(prompt(msg,defaultText));
+    var s=paint.equation;
+
+    if (s==='sin'){
+        step=50;
+        for(var i=0;i<100;i=i+0.01){
+
+            placePoint(i,Math.sin(i),center,step);
+            placePoint(-i,Math.sin(-i),center,step);
+        }
+
+    } else {
+        step=50;
+    var a = parseInt(s,10);
+    s = s.replace(a.toString(),'');
+    var b = parseInt(s,10);
+    if(b>=0){
+        s = s.replace('+'+b.toString(),'');
+    } else {
+        s = s.replace(b.toString(),'');
+    }
+    var c = parseInt(s,10);
+    s = s.replace(c.toString(),'');
+    console.log(a,b,c);
+
+
+    var x=resolve(a,b,c);
+    console.log(x.x1+'  '+x.x2);
+    ctx.setFillStyle="#FF0000";
+    placePoint(x.x1,0,center,step);
+    placePoint(x.x2,0,center,step);
+    placePoint(maxPoint(a,b),yMaxPoint(a, b, c, maxPoint(a, b)) ,center, step);
+
+    for(var i=0;i<100;i=i+0.01){
+    placePoint(i, yMaxPoint(a, b, c, i), center,step);
+    placePoint(-i, yMaxPoint(a, b, c, -i), center,step);
+    }
+    }
+
+
+};
+
+var resolve = function(a, b , c) {
+    d = Math.sqrt( (b * b) - (4 * a * c) );
+
+    x1 = (- b + d ) / (2 * a);
+    x2 = (- b - d ) / (2 * a);
+    console.log(d);
+    return {x1:x1, x2:x2};
+};
+
+var axis = function() {
+    var w=rect.width;
+    var h=rect.height;
+
+    var center={};
+    center.x= w/2;
+    center.y= h/2;
+
+
+    ctx.beginPath();
+    ctx.arc(center.x,center.y,2,0,2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(center.x,0);
+    ctx.lineTo(center.x,h);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(0,center.y);
+    ctx.lineTo(w,center.y);
+    ctx.stroke();
+    ctx.closePath();
+
+    return center;
+
+
+
+};
+
+var placePoint= function(x, y, c, s) {
+
+    setRandomColor();
+    ctx.beginPath();
+    ax = c.x+(x*s);
+    ay = c.y-(y*s);
+    ctx.arc(ax,ay,paint.width,0,2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
+    return {x:ax,y:ay}
+
+};
+
+var maxPoint = function(a, b){
+
+    return (-b/(2*a));
+};
+
+var yMaxPoint = function(a, b, c, x){
+    return((x * x * a) + (x * b) +c );
+
+};
