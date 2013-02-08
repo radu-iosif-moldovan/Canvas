@@ -222,6 +222,13 @@ t.childNodes[61].onclick=function() {//save
     paint.setColor(s);
     ctx.strokeStyle=paint.color;
     setFillStyle(paint.color);
+
+     s='#';
+        for (i = 0; i < 6; i++) {
+            s+=Math.floor(Math.random()*16).toString(16);
+        }
+    s=s.toUpperCase();
+    paint.setGradientColor(s);
     
 };
 setRandomColor = function(){
@@ -235,7 +242,16 @@ setRandomColor = function(){
     paint.setColor(s);
     ctx.strokeStyle=paint.color;
     setFillStyle(paint.color);
-}
+     s='#';
+        for (i = 0; i < 6; i++) {
+            s+=Math.floor(Math.random()*16).toString(16);
+        }
+    s=s.toUpperCase();
+    paint.setGradientColor(s);
+
+   
+
+};
 t.childNodes[63].onclick=function() {//save
     var x1,y1,x2,y2,i,s,k=100;
 
@@ -368,23 +384,23 @@ c.addEventListener('mouseup',function (evt){
     ctx.stroke();
     }
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)}) //used for UNDO functionality, high memory usage!!!!!
-    ctx.closePath();   
-    break;    
+    ctx.closePath();
+    break;
     case 'text':
-    {
+
     ctx.font=document.getElementById('textSize').value+"px Arial";
     ctx.fillText(paint.text,x,y);
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
-    break;    
-    }
+    break;
+
     case 'bezier':
-    {
+
     ctx.bezierCurveTo(paint.x,paint.y+100,x,y-100,x,y);
     ctx.stroke();
     ctx.closePath();
     //paint.addAction({'state':ctx.getImageData(0,0,1900,800)})  //used for UNDO functionality, high memory usage!!!!!
     break;
-    }
+
     case 'quadratic':
     {
     var cpx=0;
@@ -427,61 +443,69 @@ var stop = function(e) {
 var plot = document.getElementById('plot');
 plot.onclick = function() {
     var center=axis();
-    var step=10;
+    var step=50;
     var msg="Hello";
     var defaultText="Function:" ;
+    var i;
 
 
     paint.setEquation(prompt(msg,defaultText));
     var s=paint.equation;
 
     if (s==='sin'){
-        step=50;
-        for(var i=0;i<100;i=i+0.01){
+
+        for(i=0;i<100;i=i+0.01){
 
             placePoint(i,Math.sin(i),center,step);
             placePoint(-i,Math.sin(-i),center,step);
         }
-
     } else {
-        step=50;
-    var a = parseInt(s,10);
-    s = s.replace(a.toString(),'');
-    var b = parseInt(s,10);
-    if(b>=0){
-        s = s.replace('+'+b.toString(),'');
-    } else {
-        s = s.replace(b.toString(),'');
+        if (s==='cos'){
+            step=50;
+            for(i=0;i<100;i=i+0.01){
+                placePoint(i,Math.cos(i),center,step);
+                placePoint(-i,Math.cos(-i),center,step);
+            }
+
+        } else {
+            if (s==='log'){
+
+                for(i=0;i<100;i=i+0.01){
+
+                    placePoint(i,Math.log(i),center,step);
+                    placePoint(-i,Math.log(-i),center,step);
+                }
+           } else {
+                if (s==='exp'){
+                    for(i=0;i<100;i=i+0.01){
+
+                        placePoint(i,Math.exp(i),center,step);
+                        placePoint(-i,Math.exp(-i),center,step);
+                    }
+                } else {
+
+                    var a = parseInt(s,10);
+                    s = s.replace(a.toString(),'');
+                    var b = parseInt(s,10);
+                    if(b>=0){
+                        s = s.replace('+'+b.toString(),'');
+                    } else {
+                        s = s.replace(b.toString(),'');
+                    }
+                    var c = parseInt(s,10);
+                    s = s.replace(c.toString(),'');
+                    console.log(a,b,c);
+
+                    for(i=0;i<100;i=i+0.01){
+                        placePoint(i, yPoint(a, b, c, i), center,step);
+                        placePoint(-i, yPoint(a, b, c, -i), center,step);
+                    }
+                }
+            }
+        }
     }
-    var c = parseInt(s,10);
-    s = s.replace(c.toString(),'');
-    console.log(a,b,c);
-
-
-    var x=resolve(a,b,c);
-    console.log(x.x1+'  '+x.x2);
-    ctx.setFillStyle="#FF0000";
-    placePoint(x.x1,0,center,step);
-    placePoint(x.x2,0,center,step);
-    placePoint(maxPoint(a,b),yMaxPoint(a, b, c, maxPoint(a, b)) ,center, step);
-
-    for(var i=0;i<100;i=i+0.01){
-    placePoint(i, yMaxPoint(a, b, c, i), center,step);
-    placePoint(-i, yMaxPoint(a, b, c, -i), center,step);
-    }
-    }
-
-
 };
 
-var resolve = function(a, b , c) {
-    d = Math.sqrt( (b * b) - (4 * a * c) );
-
-    x1 = (- b + d ) / (2 * a);
-    x2 = (- b - d ) / (2 * a);
-    console.log(d);
-    return {x1:x1, x2:x2};
-};
 
 var axis = function() {
     var w=rect.width;
@@ -524,16 +548,10 @@ var placePoint= function(x, y, c, s) {
     ctx.arc(ax,ay,paint.width,0,2*Math.PI);
     ctx.fill();
     ctx.closePath();
-    return {x:ax,y:ay}
+    return {x:ax,y:ay};
 
 };
-
-var maxPoint = function(a, b){
-
-    return (-b/(2*a));
-};
-
-var yMaxPoint = function(a, b, c, x){
+var yPoint = function(a, b, c, x){
     return((x * x * a) + (x * b) +c );
 
 };
